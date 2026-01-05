@@ -1,0 +1,279 @@
+/* --- 1. GLOBAL SETTINGS --- */
+:root {
+    --ice-dark: #050b14;
+    --ice-blue: #00d9ff;
+    --ice-glow: rgba(0, 217, 255, 0.6);
+    --ice-border: #466d85;
+}
+
+/* IMPORT FONT FROZEN */
+@font-face {
+    font-family: "Frozen";
+    src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/209981/Ice%20kingdom%20-%20Bold%20-%20Por%20Kustren.woff");
+}
+
+body {
+    background-color: var(--ice-dark);
+    /* TAHAP 5: HOLOGRAPHIC SCROLL EFFECT (Fixed Background) */
+    background-image: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/bg_fog.jpg');
+    background-attachment: fixed; /* KUNCI PARALLAX */
+    background-size: cover;
+    background-position: center top;
+    
+    color: #cceeff;
+    font-family: 'Roboto', sans-serif;
+    user-select: none; -webkit-user-select: none;
+    overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b1116; }
+::-webkit-scrollbar-thumb { background: #2a4b5f; border-radius: 4px; }
+
+/* Font Utilities */
+h1, h2, h3, h4, h5, .font-cinzel { 
+    font-family: 'Cinzel', serif; letter-spacing: 1px; color: #fff;
+    text-shadow: 0 0 10px var(--ice-blue);
+}
+.text-ice { color: var(--ice-blue) !important; }
+.text-justify { text-align: justify; }
+
+/* --- 2. FROZEN TEXT EFFECT (Untuk Judul Besar) --- */
+.frozen-text {
+    font-family: "Frozen", serif;
+    background-image: url("https://assets.codepen.io/209981/ice.jpg");
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: contain;
+    position: relative;
+    -webkit-text-stroke: 1px #4f90ab;
+    filter: drop-shadow(0 0 5px rgba(41, 131, 172, 0.5));
+    letter-spacing: 2px;
+}
+.frozen-text::before {
+    content: attr(data-text); position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.8) 50%, transparent 55%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-size: 200%; animation: shine 5s infinite; pointer-events: none;
+}
+@keyframes shine { 0% { background-position: -120%; } 20% { background-position: 120%; } 100% { background-position: 120%; } }
+
+/* --- 3. NEON FILTER BUTTONS (Tahap 4 Fix) --- */
+.neon-menu { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 0; }
+
+.neon-menu li {
+    position: relative; list-style: none; width: 70px; height: 70px;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; transition: 0.5s; background: rgba(11, 17, 22, 0.9); border-radius: 10px;
+    border: 1px solid #333;
+}
+/* Border Glow */
+.neon-menu li::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: 0 0 0 1px var(--clr); border-radius: 10px; transition: 0.5s; opacity: 0;
+}
+.neon-menu li:hover::before, .neon-menu li.active::before {
+    inset: -2px; opacity: 1;
+    box-shadow: 0 0 10px var(--clr), 0 0 20px var(--clr);
+}
+/* Link & Content */
+.neon-menu li a {
+    display: flex; justify-content: center; align-items: center;
+    text-decoration: none; width: 100%; height: 100%; flex-direction: column;
+}
+/* Icon Valve */
+.filter-icon {
+    width: 32px; height: 32px; transition: 0.5s; object-fit: contain; z-index: 10;
+    filter: grayscale(100%); opacity: 0.7;
+}
+.neon-menu li:hover .filter-icon, .neon-menu li.active .filter-icon {
+    transform: translateY(-8px); filter: grayscale(0%) drop-shadow(0 0 5px var(--clr)); opacity: 1;
+}
+/* Text Label */
+.neon-menu li .text {
+    position: absolute; bottom: 8px; font-size: 0.65em; font-weight: bold; color: var(--clr);
+    opacity: 0; transition: 0.5s; transform: translateY(10px);
+}
+.neon-menu li:hover .text, .neon-menu li.active .text {
+    opacity: 1; transform: translateY(0);
+}
+
+/* --- 4. SNOW ANIMATION --- */
+#snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+.snowflake {
+    position: absolute; top: -10px; border-radius: 50%; background: white; opacity: 0.8;
+    box-shadow: 0 0 10px white; animation: fall linear infinite;
+}
+@keyframes fall {
+    0% { transform: translateY(-10vh) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(110vh) scale(1); opacity: 0.2; }
+}
+
+/* --- 5. HOLOGRAPHIC CARD (Hero Card) --- */
+.canvas-card {
+    position: relative; width: 100%; aspect-ratio: 16/9;
+    background: #0b1116; border: 1px solid #333; overflow: hidden;
+    transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); cursor: pointer;
+}
+/* Hologram Shader */
+.shader-layer {
+    position: absolute; inset: 0; opacity: 0; transition: 0.5s; z-index: 2; mix-blend-mode: overlay;
+    background: linear-gradient(135deg, rgba(0,217,255,0) 30%, rgba(0,217,255,0.3) 45%, rgba(255,255,255,0.4) 50%, rgba(0,217,255,0.3) 55%, rgba(0,217,255,0) 70%);
+    background-size: 200% 200%;
+}
+.canvas-img-wrapper { width: 100%; height: 100%; overflow: hidden; transition: 0.5s ease-in-out; }
+.hero-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(40%) contrast(1.1); transition: 0.5s; }
+.canvas-details {
+    position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; z-index: 10;
+    background: linear-gradient(to top, black 20%, transparent 100%);
+}
+.canvas-title { color: #fff; transform: translateX(-20px); opacity: 0; transition: 0.4s; text-shadow: 0 0 5px cyan; }
+.canvas-subtitle { transform: translateY(20px); opacity: 0; transition: 0.4s 0.1s; }
+
+/* Hero Card Hover */
+.canvas-card:hover { border-color: var(--ice-blue); box-shadow: 0 0 20px rgba(0, 217, 255, 0.3); transform: translateY(-5px); z-index: 10; }
+.canvas-card:hover .shader-layer { opacity: 1; background-position: 100% 100%; }
+.canvas-card:hover .hero-img { transform: scale(1.1); filter: grayscale(0%); }
+.canvas-card:hover .canvas-title { transform: translateX(0); opacity: 1; }
+.canvas-card:hover .canvas-subtitle { transform: translateY(0); opacity: 1; }
+
+/* --- 6. ITEM CARD STYLE --- */
+.item-canvas { transition: 0.3s; overflow: hidden; cursor: pointer; background: #1a1a1a; }
+.item-img { transition: 0.3s; width: 100%; }
+.holo-sheen {
+    position: absolute; inset: 0; z-index: 2; opacity: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+    background-size: 200%; transition: 0.5s; pointer-events: none;
+}
+.item-canvas:hover { transform: scale(1.1); border-color: #ffd700 !important; box-shadow: 0 0 10px rgba(255,215,0,0.3); z-index: 10; }
+.item-canvas:hover .holo-sheen { opacity: 1; background-position: 100%; }
+
+/* Mobile Fix */
+@media (max-width: 768px) {
+    .mobile-reset-margin { margin-top: 0 !important; }
+    .hero-header-container { height: 300px !important; min-height: 300px !important; }
+    .header-content { margin-top: 60px !important; }
+    h1.frozen-text { font-size: 2.5rem !important; }
+}
+
+/* --- FIX SEARCH BAR FOCUS (Hapus Kotak Biru) --- */
+.form-control:focus {
+    background-color: #111; /* Tetap gelap */
+    color: white;
+    border-color: #555; /* Border abu saja */
+    box-shadow: none; /* HAPUS GLOW BIRU */
+    outline: none;
+}
+
+/* Fix Placeholder Color */
+.form-control::placeholder { color: #666; font-style: italic; }
+
+/* --- NAVBAR FROZEN TEXT SIZE --- */
+.navbar-brand.frozen-text {
+    font-size: 1.8rem; /* Ukuran pas di navbar */
+    letter-spacing: 3px;
+    padding-bottom: 5px; /* Kompensasi font */
+}
+
+/* --- NAVBAR STYLES --- */
+.navbar-dota {
+    background-color: rgba(5, 11, 20, 0.9); /* Biru Gelap Transparan */
+    border-bottom: 1px solid var(--ice-border);
+    padding: 15px 0;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
+}
+.nav-link { 
+    color: #aaa !important; 
+    text-transform: uppercase; 
+    font-weight: bold; 
+    letter-spacing: 2px;
+    transition: 0.3s;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+}
+.nav-link:hover, .nav-link.active { 
+    color: var(--ice-blue) !important; 
+    text-shadow: 0 0 10px var(--ice-blue); 
+    transform: scale(1.05);
+}
+/* Ukuran font brand di navbar */
+.navbar-brand.frozen-text {
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+}
+
+/* --- HERO NAVIGATION (Next/Prev) --- */
+.hero-navigation .nav-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    width: 80px;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--ice-border);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    border-radius: 10px;
+}
+
+.prev-arrow { left: 0; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-left: none; }
+.next-arrow { right: 0; border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-right: none; }
+
+.nav-content {
+    display: flex; flex-direction: column; align-items: center; opacity: 0.7; transition: 0.3s;
+}
+.nav-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+/* Hover Effect: Muncul & Glow */
+.hero-navigation .nav-arrow:hover {
+    width: 140px; /* Melebar saat hover */
+    background: rgba(0, 20, 40, 0.9);
+    border-color: var(--ice-blue);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+}
+.hero-navigation .nav-arrow:hover .nav-content { opacity: 1; transform: scale(1.1); }
+
+/* --- HERO DETAIL PAGE STYLES --- */
+.video-wrapper {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 100%; height: 100%; max-width: 1280px;
+    z-index: 0; opacity: 0.85; mix-blend-mode: screen; pointer-events: none;
+}
+.hero-video {
+    width: 100%; height: 100%; object-fit: contain;
+    mask-image: radial-gradient(circle, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle, black 40%, transparent 80%);
+}
+.video-overlay-ice {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, var(--ice-dark) 10%, transparent 50%);
+    pointer-events: none;
+}
+.playstyle-text.collapsed {
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.fade-in-anim {
+    opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s ease-out forwards;
+}
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+/* Hero Navigation Arrows */
+.hero-navigation .nav-arrow {
+    position: fixed; top: 50%; transform: translateY(-50%); z-index: 100;
+    width: 80px; height: 100px; background: rgba(0,0,0,0.6);
+    border: 1px solid var(--ice-border); backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center; transition: 0.3s; border-radius: 10px;
+}
+.prev-arrow { left: 0; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-left: none; }
+.next-arrow { right: 0; border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-right: none; }
+.hero-navigation .nav-arrow:hover { width: 140px; background: rgba(0,20,40,0.9); border-color: var(--ice-blue); box-shadow: 0 0 20px rgba(0,217,255,0.2); }
+.nav-content { display: flex; flex-direction: column; align-items: center; opacity: 0; transition: 0.3s; display: none; }
+.hero-navigation .nav-arrow:hover .nav-content { opacity: 1; display: flex; }
+.nav-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
