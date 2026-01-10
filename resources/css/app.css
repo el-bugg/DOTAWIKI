@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* .item-canvas {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.holo-sheen {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+    background-size: 200%;
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.item-canvas:hover .holo-sheen {
+    opacity: 1;
+    background-position: 100%;
+} */

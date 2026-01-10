@@ -11,6 +11,23 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    // Relasi Mengikuti (Orang yang kita follow)
+    // app/Models/User.php
+
+public function followers()
+{
+    return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id');
+}
+
+public function following()
+{
+    return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
+}
+
+    // Cek apakah user sedang mengikuti user lain
+    public function isFollowing($userId) {
+        return $this->following()->where('following_id', $userId)->exists();
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +38,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar', // <--- TAMBAHKAN INI
     ];
 
     /**

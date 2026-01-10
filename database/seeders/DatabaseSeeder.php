@@ -14,12 +14,16 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // User::factory(10)->create();
+{
+    \App\Models\User::factory()->create([
+        'name' => 'Coba',
+        'email' => 'test@example.com',
+        'password' => bcrypt('password'), // Passwordnya: password
+    ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }
+    $this->call([
+        HeroOpenDotaSeeder::class,
+        ItemSeeder::class,
+    ]);
+}
 }
