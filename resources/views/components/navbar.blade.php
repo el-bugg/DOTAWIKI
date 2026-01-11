@@ -17,10 +17,10 @@
                     <a class="nav-link {{ request()->is('items') ? 'active' : '' }}" href="/items">ITEMS</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/meta">META</a>
+                    <a class="nav-link {{ request()->is('meta') ? 'active' : '' }}" href="/meta">META</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">COMMUNITY</a>
+                    <a class="nav-link {{ request()->is('community') ? 'active' : '' }}" href="{{ url('/community') }}">COMMUNITY</a>
                 </li>
             </ul>
 

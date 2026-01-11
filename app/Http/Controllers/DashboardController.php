@@ -2,46 +2,31 @@
 
 namespace App\Http\Controllers;
 
-// TAMBAHKAN DUA BARIS INI:
-use App\Models\Post; 
-use Illuminate\Support\Facades\Auth;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
-// Jika Anda sudah punya model Post, hilangkan tanda // di bawah ini:
-// use App\Models\Post; 
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    // Dashboard Sendiri
     public function index()
     {
-        // 1. Ambil postingan milik user yang sedang login
-        // 2. Sertakan hitungan likes (withCount)
-        $myPosts = Post::where('user_id', Auth::id())
-                       ->withCount('likes')
-                       ->latest()
-                       ->get();
+        $user = Auth::user();
+        $posts = Post::where('user_id', $user->id)->withCount('likes')->latest()->get();
+        $isOwnProfile = true;
 
-        // 3. Kirim variabel $myPosts ke view dashboard
-        return view('dashboard', compact('myPosts'));
+        return view('dashboard', compact('user', 'posts', 'isOwnProfile'));
     }
 
-    public function community()
+    // Profil Orang Lain
+    public function showUserProfile(User $user)
     {
-        // Lakukan hal yang sama untuk halaman community
-        return view('community', [
-            'posts' => []
-        ]);
-    }
+        $posts = Post::where('user_id', $user->id)->withCount('likes')->latest()->get();
+        
+        // Cek apakah user yang login melihat profilnya sendiri via link public
+        $isOwnProfile = (Auth::id() === $user->id);
 
-    public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'content' => 'required',
-        ]);
-
-        // LOGIKA SIMPAN (Sementara dinonaktifkan agar tidak error database)
-        // Post::create([...]);
-
-        return redirect()->back()->with('success', 'Postingan berhasil dikirim (simulasi)!');
+        return view('dashboard', compact('user', 'posts', 'isOwnProfile'));
     }
 }

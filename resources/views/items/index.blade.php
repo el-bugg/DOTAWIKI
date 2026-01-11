@@ -134,11 +134,17 @@
     document.addEventListener('DOMContentLoaded', function() {
         tippy('.item-canvas', {
             content(reference) {
-                const id = reference.getAttribute('data-tippy-html');
-                const template = document.querySelector(id);
-                return template.innerHTML;
-            },
-            allowHTML: true,
+        const id = reference.getAttribute('data-tippy-html');
+        const template = document.querySelector(id);
+        return template.innerHTML;
+    },
+    allowHTML: true,
+    // Tambahkan ini agar konten di-refresh setiap kali di-hover
+    onShow(instance) {
+        const id = instance.reference.getAttribute('data-tippy-html');
+        const template = document.querySelector(id);
+        instance.setContent(template.innerHTML);
+    },
             theme: 'custom-dota',
             placement: 'right',
             arrow: false,

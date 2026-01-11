@@ -6,13 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+   public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('post_id')->constrained()->onDelete('cascade');
-            $table->text('content');
+            $table->text('content')->nullable(); // Boleh null jika cuma upload gambar
+            $table->string('category'); // general, hero_guide, item_guide, match_result
+            
+            // Kolom Media
+            $table->string('image')->nullable();
+            $table->string('video')->nullable();
+
+            // Kolom Relasi Opsional (Untuk Guide)
+            $table->foreignId('hero_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('item_id')->nullable()->constrained()->onDelete('set null');
+            
             $table->timestamps();
         });
     }

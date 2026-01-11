@@ -14,8 +14,15 @@ class Post extends Model
         'user_id',
         'content',
         'category',
-        'image', // WAJIB ADA
-        'video', // WAJIB ADA
+        'image', 
+        'video',
+        'match_data', // <--- WAJIB DITAMBAHKAN (agar bisa disimpan)
+    ];
+
+    // INI YANG PALING PENTING UNTUK FITUR MATCH RESULT
+    // Fungsinya mengubah JSON dari database menjadi Array PHP otomatis
+    protected $casts = [
+        'match_data' => 'array',
     ];
 
     public function user() { return $this->belongsTo(User::class); }

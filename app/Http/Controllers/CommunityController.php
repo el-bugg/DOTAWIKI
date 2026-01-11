@@ -1,44 +1,40 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User; // Tambahkan ini
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 
 class CommunityController extends Controller
 {
-    public function index() {
-        $posts = Post::with(['user', 'comments', 'likes'])->latest()->get();
-        
-        // Proteksi API agar tidak Connection Timeout (Error cURL 28)
-        $dotaNews = [];
-        try {
-            $response = Http::timeout(3)->get('https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=570&count=3');
-            if ($response->successful()) {
-                $dotaNews = $response->json()['appnews']['newsitems'] ?? [];
-            }
-        } catch (\Exception $e) {
-            // Jika koneksi internet mati/lambat, dotaNews tetap kosong tapi aplikasi tidak error
-        }
+    public function index()
+{
+    $posts = Post::with('user', 'likes', 'comments')->latest()->get();
+    
+    // Pastikan Model Hero dan Item punya kolom 'image' atau sesuaikan path-nya
+    // Contoh return: id, name, image (url/path)
+    $heroes = \App\Models\Hero::select('id', 'name', 'image')->orderBy('name')->get(); 
+    $items = \App\Models\Item::select('id', 'name', 'image')->orderBy('name')->get();
 
-        return view('community.index', compact('posts', 'dotaNews'));
-    }
+    return view('community.index', compact('posts', 'heroes', 'items'));
+}
 
     public function store(Request $request) {
         $request->validate([
-            'content' => 'required',
+            'category' => 'required',
+            'content' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'video' => 'nullable|mimes:mp4,mov,ogg|max:20000',
-            'category' => 'required'
         ]);
 
         $post = new Post();
         $post->user_id = Auth::id();
-        $post->content = $request->content;
         $post->category = $request->category;
+        $post->content = $request->content ?? '';
 
-        // Logika upload file agar tersimpan di storage
+        // Handle File Upload
         if ($request->hasFile('image')) {
             $post->image = $request->file('image')->store('posts/images', 'public');
         }
@@ -46,12 +42,40 @@ class CommunityController extends Controller
             $post->video = $request->file('video')->store('posts/videos', 'public');
         }
 
+        // Handle Match Result (Jika kategori match)
+        if ($request->category === 'match_result') {
+            $post->match_data = [
+                'hero' => $request->hero_name,
+                'kda' => $request->kda,
+                'result' => $request->match_result, // Win/Loss
+                'match_id' => $request->match_id
+            ];
+        }
+
         $post->save();
         return back()->with('success', 'Berhasil diposting!');
     }
 
-    // Perbaikan View Guide agar tidak InvalidArgumentException
-    public function newbie() { return view('community.index', ['posts' => Post::where('category', 'newbie_guide')->get(), 'dotaNews' => []]); }
-    public function heroGuide() { return view('community.index', ['posts' => Post::where('category', 'hero_guide')->get(), 'dotaNews' => []]); }
-    public function itemGuide() { return view('community.index', ['posts' => Post::where('category', 'item_guide')->get(), 'dotaNews' => []]); }
+    public function destroy(Post $post)
+    {
+        // Pastikan yang menghapus adalah pemilik postingan
+        if (Auth::id() !== $post->user_id) {
+            return back()->with('error', 'Unauthorized');
+        }
+
+        $post->delete();
+        return back()->with('success', 'Postingan dihapus.');
+    }
+    
+    // Fitur Like
+    public function toggleLike(Post $post)
+    {
+        $like = $post->likes()->where('user_id', Auth::id())->first();
+        if ($like) {
+            $like->delete();
+        } else {
+            $post->likes()->create(['user_id' => Auth::id()]);
+        }
+        return back();
+    }
 }

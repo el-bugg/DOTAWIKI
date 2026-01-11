@@ -501,3 +501,118 @@ body {
 }
 .stat-box h3 { margin: 0; color: var(--accent); }
 .stat-box span { font-size: 0.8rem; color: var(--text-secondary); }
+
+
+/* login */
+
+/*  */
+@media (max-width: 768px) {
+    .hero-video-bg {
+        object-fit: cover; /* Kembali ke cover hanya untuk HP agar hero terlihat besar */
+    }
+}
+/* Tambahkan ini di bagian bawah style layout Anda */
+.glass-input {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(34, 211, 238, 0.2) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+    background: rgba(5, 11, 20, 0.9) !important;
+    border-color: #22d3ee !important;
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+    outline: none;
+}
+
+.btn-neon {
+    background: linear-gradient(90deg, #0891b2, #22d3ee) !important;
+    color: #050b14 !important;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-neon:hover {
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.6);
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Style tambahan untuk video background agar tidak menutupi form */
+/* Update class CSS ini di file frozen-theme.css atau di dalam tag <style> */
+/* Update pada bagian hero-video-bg */
+.hero-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    
+    /* Default Desktop: contain agar hero terlihat utuh */
+    object-fit: contain; 
+}
+
+/* KHUSUS MOBILE (Layar di bawah 768px) */
+@media (max-width: 768px) {
+    .hero-video-bg {
+        /* Gunakan cover di mobile agar video penuh menutup layar */
+        object-fit: cover; 
+        /* Geser posisi sedikit agar wajah hero lebih terlihat (opsional) */
+        object-position: center 20%; 
+    }
+
+    /* Pastikan padding main tidak terlalu besar agar kartu tidak terpotong */
+    main {
+        padding: 1rem !important;
+    }
+
+    /* Perkecil ukuran font judul agar tidak overflow */
+    .frozen-text {
+        font-size: 2.5rem !important;
+    }
+    
+    /* Sesuaikan kartu login agar lebih ramping di mobile */
+    .glass-panel {
+        padding: 1.5rem !important;
+        margin: 0 10px;
+        width: calc(100% - 20px);
+    }
+}
+
+
+<style>
+    /* Status Badge Styling agar mirip screenshot */
+    .status-badge {
+        font-size: 10px;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        min-width: 100px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-stable {
+        background: rgba(100, 116, 139, 0.1);
+        color: #64748b;
+        border: 1px solid rgba(100, 116, 139, 0.2);
+    }
+
+    .status-nerf {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+</style>

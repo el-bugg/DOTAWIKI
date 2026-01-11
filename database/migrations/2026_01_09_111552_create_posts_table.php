@@ -12,10 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->text('content');
-            $table->string('category'); // newbie_guide, hero_guide, item_guide, match_result
+           $table->id();
+        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        $table->text('content')->nullable(); // Nullable karena bisa jadi cuma share match
+        $table->string('category'); 
+        $table->string('image')->nullable();
+        $table->string('video')->nullable();
+        
+        // Data Match (Disimpan dalam format JSON: {hero: "Invoker", kda: "10/2/15", result: "Win", match_id: "12345"})
+        $table->json('match_data')->nullable();
             
             // Kolom nullable untuk relasi opsional
             $table->foreignId('hero_id')->nullable()->constrained()->onDelete('set null');

@@ -135,13 +135,13 @@
                 </div>
 
                 <div class="col-lg-7 order-1 order-lg-2 mb-4 mb-lg-0 position-relative d-flex justify-content-center">
-                    <div id="map-container" class="position-relative shadow-lg border border-info"
-                        style="width: 100%; aspect-ratio: 1/1; max-width: 600px; background: black;">
-                        <img src="https://liquipedia.net/commons/images/thumb/9/90/Minimap_7.33c.png/600px-Minimap_7.33c.png"
-                            class="w-100 h-100 object-fit-cover" style="pointer-events: none;">
-                        <div class="position-absolute top-0 start-0 w-100 h-100" id="drop-zone"></div>
-                    </div>
-                </div>
+    <div id="map-container" class="position-relative shadow-lg border border-info"
+        style="width: 100%; aspect-ratio: 1/1; max-width: 600px; background: black;">
+        <img src="https://static.wikia.nocookie.net/dota2_gamepedia/images/1/12/Minimap_7.33.png" 
+     class="w-100 h-100 object-fit-cover">
+        <div class="position-absolute top-0 start-0 w-100 h-100" id="drop-zone"></div>
+    </div>
+</div>
 
                 <div class="col-lg-2 order-3">
                     <div class="text-white-50 small p-3">

@@ -26,9 +26,12 @@ Route::get('/', function () {
 
 // Pastikan ini ada agar menu Heroes dan Items berfungsi
 Route::get('/heroes', [HeroController::class, 'index'])->name('heroes.index');
+Route::get('/heroes/{id}', [HeroController::class, 'show'])->name('heroes.show');
 Route::get('/hero/{id}', [HeroController::class, 'show'])->name('hero.show');
 Route::get('/items', [ItemController::class, 'index'])->name('items.index');
 Route::get('/items/{id}', [ItemController::class, 'show'])->name('items.show');
+Route::get('/meta', [HeroController::class, 'meta'])->name('meta.index');
+// Route::get('/community', [DashboardController::class, 'community'])->name('community');
 
 /*
 |--------------------------------------------------------------------------
@@ -49,28 +52,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
     // Di dalam Route::middleware('auth')->group(function () { ...
-Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
+    Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
 
 
-  // DASHBOARD
+  // DASHBOARD (Halaman Sendiri)
+  
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // PUBLIC PROFILE (Halaman Orang Lain)
+    Route::get('/user/{user}', [DashboardController::class, 'showUserProfile'])->name('profile.show');
 
-    // COMMUNITY & GUIDES (Halaman Kategori Panduan)
+    // COMMUNITY
     Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
-    Route::get('/community/newbie-guide', [CommunityController::class, 'newbie'])->name('community.newbie');
-    Route::get('/community/hero-guide', [CommunityController::class, 'heroGuide'])->name('community.hero');
-    Route::get('/community/item-guide', [CommunityController::class, 'itemGuide'])->name('community.item');
-
-    // POSTING (Support Media Gambar & Video)
+    Route::get('/community/hero', [CommunityController::class, 'heroGuide'])->name('community.hero'); // <-- INI YANG HILANG
+    Route::get('/community/item', [CommunityController::class, 'itemGuide'])->name('community.item'); // <-- INI JUGA MUNGKIN HILANG
     Route::post('/community/post', [CommunityController::class, 'store'])->name('community.store');
-
-    // INTERAKSI (Like & Comment)
-    Route::post('/post/{post}/like', [CommunityController::class, 'toggleLike'])->name('post.like');
-    Route::post('/post/{post}/comment', [CommunityController::class, 'storeComment'])->name('post.comment');
+    
+    // ACTION POST
+    Route::delete('/post/{post}', [CommunityController::class, 'destroy'])->name('post.destroy'); // Hapus Post
+    Route::post('/post/{post}/like', [CommunityController::class, 'toggleLike'])->name('post.like'); // Like
 
     // FOLLOW SYSTEM
-    Route::post('/follow/{user}', [CommunityController::class, 'follow'])->name('community.follow');
-    Route::post('/unfollow/{user}', [CommunityController::class, 'unfollow'])->name('community.unfollow');
+    Route::post('/follow/{user}', [FollowController::class, 'store'])->name('user.follow');
+    Route::delete('/unfollow/{user}', [FollowController::class, 'destroy'])->name('user.unfollow');
 });
 
 require __DIR__.'/auth.php';
