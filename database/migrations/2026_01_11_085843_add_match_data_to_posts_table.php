@@ -10,21 +10,29 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('posts', function (Blueprint $table) {
-        // Menambahkan kolom match_data tipe JSON yang boleh kosong
-        $table->json('match_data')->nullable()->after('category');
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            // PERBAIKAN: Cek dulu apakah kolom 'match_data' sudah ada.
+            // Jika belum ada, baru dibuat. Jika sudah ada, lewati.
+            if (!Schema::hasColumn('posts', 'match_data')) {
+                $table->json('match_data')->nullable()->after('category');
+            }
 
-        // Sekalian update kolom image/video biar tidak error kalau kosong
-        $table->string('image')->nullable()->change();
-        $table->string('video')->nullable()->change();
-    });
-}
+            // CATATAN: Bagian ->change() untuk image/video saya hapus.
+            // Alasannya: SQLite di Render sering error jika kita mengubah kolom yang sudah ada.
+            // Biarkan saja seperti settingan awal (biasanya sudah nullable dari awal).
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('posts', function (Blueprint $table) {
-        $table->dropColumn('match_data');
-    });
-}
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            if (Schema::hasColumn('posts', 'match_data')) {
+                $table->dropColumn('match_data');
+            }
+        });
+    }
 };
