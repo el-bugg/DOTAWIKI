@@ -38,3 +38,7 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev --ignore-pl
 
 # Ubah hak akses
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+
+# Jalankan migrasi database, lalu nyalakan Apache
+CMD bash -c "php artisan migrate --force && apache2-foreground"
