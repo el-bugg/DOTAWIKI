@@ -22,20 +22,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-RUN composer install --no-interaction --optimize-autoloader --no-dev --ignore-platform-reqs
+# --- PERBAIKAN DI SINI ---
+# Saya MENGHAPUS flag "--no-dev" agar library Faker ikut terinstall
+RUN composer install --no-interaction --optimize-autoloader --ignore-platform-reqs
+# -------------------------
 
-# --- BAGIAN INI DIPERBARUI (SOLUSI ERROR 500) ---
 # 1. Buat file database kosong
 RUN touch database/database.sqlite
 
-# 2. BERIKAN IZIN PENUH (777) agar Laravel bisa menulis database
-# Tanpa baris chmod ini, website akan Error 500
+# 2. Berikan izin penuh (777)
 RUN chmod 777 database/database.sqlite
 RUN chmod -R 777 storage bootstrap/cache database
 
-# 3. Ubah kepemilikan ke user Apache (standar)
+# 3. Ubah kepemilikan
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
-# ----------------------------
 
 # Jalankan migrasi, isi data (seed), lalu nyalakan server
 CMD bash -c "php artisan migrate --force && php artisan db:seed --force && apache2-foreground"
