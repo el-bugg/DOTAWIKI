@@ -32,5 +32,5 @@ RUN touch database/database.sqlite
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 # ----------------------------
 
-# Perintah menjalankan migrasi & server
-CMD bash -c "php artisan migrate --force && apache2-foreground"
+# Jalankan migrasi, LALU isi data (seed), LALU nyalakan server
+CMD bash -c "php artisan migrate --force && php artisan db:seed --force && apache2-foreground"
