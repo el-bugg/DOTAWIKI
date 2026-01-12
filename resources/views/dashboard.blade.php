@@ -72,20 +72,26 @@
                 <main class="lg:col-span-3 space-y-8" x-data="{ currentTab: 'posts' }">
                     
                     <div class="sticky top-24 z-20 flex justify-center mb-8">
-                        <div class="p-1.5 rounded-full flex space-x-2 shadow-[0_0_20px_rgba(0,0,0,0.5)] bg-black/90 border border-[#466d85]/50">
-                            <button @click="currentTab = 'posts'" 
-                                    :class="currentTab === 'posts' ? 'bg-[#00d9ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.6)]' : 'text-[#88aabb] hover:text-white hover:bg-[#00d9ff]/10 bg-transparent'"
-                                    class="px-8 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 font-cinzel border-none outline-none">
-                                <i class="fas fa-stream mr-2"></i> Timeline
-                            </button>
-                            <button @click="currentTab = 'media'" 
-                                    :class="currentTab === 'media' ? 'bg-[#00d9ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.6)]' : 'text-[#88aabb] hover:text-white hover:bg-[#00d9ff]/10 bg-transparent'"
-                                    class="px-8 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 font-cinzel border-none outline-none">
-                                <i class="fas fa-images mr-2"></i> Gallery
-                            </button>
-                        </div>
-                    </div>
+      <div class="p-1.5 rounded-full flex space-x-2 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-[#050b14]/90 border border-[#466d85]/50 backdrop-blur-md">
+        
+        <button @click="currentTab = 'posts'" 
+                :class="currentTab === 'posts' 
+                    ? 'bg-[#00d9ff]/10 text-[#00d9ff] border-[#00d9ff] shadow-[0_0_15px_rgba(0,217,255,0.3)]' 
+                    : 'text-[#88aabb] border-transparent hover:text-white hover:bg-[#00d9ff]/5'"
+                class="px-8 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 font-cinzel border outline-none flex items-center">
+            <i class="fas fa-stream mr-2"></i> Timeline
+        </button>
 
+        <button @click="currentTab = 'media'" 
+                :class="currentTab === 'media' 
+                    ? 'bg-[#00d9ff]/10 text-[#00d9ff] border-[#00d9ff] shadow-[0_0_15px_rgba(0,217,255,0.3)]' 
+                    : 'text-[#88aabb] border-transparent hover:text-white hover:bg-[#00d9ff]/5'"
+                class="px-8 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 font-cinzel border outline-none flex items-center">
+            <i class="fas fa-images mr-2"></i> Gallery
+        </button>
+        
+    </div>
+</div>
                     <div x-show="currentTab === 'posts'" class="space-y-6">
                         
                         <div class="p-6 relative overflow-hidden border border-[#466d85]/30 bg-[#0b1116]/80 backdrop-blur-xl rounded-xl" x-data="{ fileName: null }">

@@ -67,7 +67,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/community/hero', [CommunityController::class, 'heroGuide'])->name('community.hero'); // <-- INI YANG HILANG
     Route::get('/community/item', [CommunityController::class, 'itemGuide'])->name('community.item'); // <-- INI JUGA MUNGKIN HILANG
     Route::post('/community/post', [CommunityController::class, 'store'])->name('community.store');
+    Route::post('/community/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     
+Route::post('/community/posts/{post}/comments', [CommentController::class, 'store'])
+    ->name('comments.store')
+    ->middleware('auth'); 
+
     // ACTION POST
     Route::delete('/post/{post}', [CommunityController::class, 'destroy'])->name('post.destroy'); // Hapus Post
     Route::post('/post/{post}/like', [CommunityController::class, 'toggleLike'])->name('post.like'); // Like

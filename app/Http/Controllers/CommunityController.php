@@ -21,40 +21,60 @@ class CommunityController extends Controller
     return view('community.index', compact('posts', 'heroes', 'items'));
 }
 
-    public function store(Request $request) {
-        $request->validate([
-            'category' => 'required',
-            'content' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'video' => 'nullable|mimes:mp4,mov,ogg|max:20000',
-        ]);
+    public function store(Request $request)
+{
+    // 1. Tentukan aturan dasar (Wajib untuk semua form)
+    $rules = [
+        'category' => 'required|string',
+        'content'  => 'required|string|max:1000',
+        'image'    => 'nullable|image|max:2048', // Opsional untuk keduanya
+    ];
 
-        $post = new Post();
-        $post->user_id = Auth::id();
-        $post->category = $request->category;
-        $post->content = $request->content ?? '';
-
-        // Handle File Upload
-        if ($request->hasFile('image')) {
-            $post->image = $request->file('image')->store('posts/images', 'public');
-        }
-        if ($request->hasFile('video')) {
-            $post->video = $request->file('video')->store('posts/videos', 'public');
-        }
-
-        // Handle Match Result (Jika kategori match)
-        if ($request->category === 'match_result') {
-            $post->match_data = [
-                'hero' => $request->hero_name,
-                'kda' => $request->kda,
-                'result' => $request->match_result, // Win/Loss
-                'match_id' => $request->match_id
-            ];
-        }
-
-        $post->save();
-        return back()->with('success', 'Berhasil diposting!');
+    // 2. Tambahkan aturan KHUSUS jika postingan datang dari Community (Tab Match/Build)
+    if ($request->category === 'match_result') {
+        $rules['hero_name'] = 'required|string';
+        $rules['match_result'] = 'required|in:Win,Loss';
+        $rules['kda'] = 'required|string';
+    } 
+    elseif ($request->category === 'hero_build' || $request->category === 'item_build') {
+        $rules['hero_id'] = 'required|exists:heroes,id';
+        $rules['items'] = 'nullable|array';
     }
+    
+
+    // 3. Jalankan Validasi Dinamis
+    $validated = $request->validate($rules);
+
+    // 4. Proses Upload Gambar (Sama untuk keduanya)
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('posts', 'public');
+    }
+
+    // 5. Siapkan Data Tambahan (Match Data) hanya jika kategori match
+    $matchData = null;
+    if ($request->category === 'match_result') {
+        $matchData = [
+            'hero_name' => $request->hero_name,
+            'result'    => $request->match_result,
+            'kda'       => $request->kda,
+        ];
+    }
+
+    // 6. Simpan ke Database
+    $post = Post::create([
+        'user_id'    => Auth::id(),
+        'category'   => $request->category, // Ini otomatis mendeteksi 'general' atau 'match'
+        'content'    => $request->content,
+        'image'      => $imagePath,
+        'hero_id'    => $request->hero_id ?? null, // Pakai null operator agar form dashboard profile gak error
+        'match_data' => $matchData,            // Laravel otomatis mengubah array jadi JSON jika di-cast di model
+        // PERBAIKAN DISINI: Ganti 'items' menjadi 'recommended_items'
+        'recommended_items' => $request->items ?? null,
+    ]);
+
+    return back()->with('success', 'Postingan berhasil diterbitkan!');
+}
 
     public function destroy(Post $post)
     {

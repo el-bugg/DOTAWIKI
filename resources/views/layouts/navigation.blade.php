@@ -1,4 +1,4 @@
-<nav class="navbar-dota flex justify-between items-center px-8 py-4 border-b border-ice/20 bg-[#050b14]">
+{{-- <nav class="navbar-dota flex justify-between items-center px-8 py-4 border-b border-ice/20 bg-[#050b14]">
     <div class="flex items-center gap-8">
         <a href="{{ route('dashboard') }}" class="frozen-text text-2xl font-cinzel no-underline" data-text="DOTA WIKI">DOTA WIKI</a>
         <div class="flex gap-6">
@@ -20,4 +20,4 @@
             </button>
         </form>
     </div>
-</nav>
+</nav> --}}
